@@ -3,4 +3,7 @@ import enum
 
 class UserRole(enum.Enum):
     ADMIN = 'admin'
-    GUEST = 'guest'
+    MANAGER = 'manager'
+    ACCOUNTANT = 'accountant'
+    LOGISTIC = 'logistics'
+    CUSTOMER = 'customer'

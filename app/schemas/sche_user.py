@@ -15,13 +15,45 @@ class UserBase(BaseModel):
         orm_mode = True
 
 
-class UserItemResponse(UserBase):
+class Login(BaseModel):
+    username_id: str
+    password: str
+
+
+class Register(BaseModel):
+    full_name: str
+    user_name: str
+    email: EmailStr
+    password: str
+    phone_number: str
+
+
+class UserDTO(BaseModel):
     id: int
     full_name: str
+    user_name: str
     email: EmailStr
-    is_active: bool
-    role: str
-    last_login: Optional[datetime]
+    phone_number: str
+    role_name: str
+    role_description: str
+
+
+class UserNormalDTO(BaseModel):
+    id: int
+    company_id: int
+    full_name: str
+    user_name: str
+    email: EmailStr
+    phone_number: str
+    role_name: str
+    role_description: str
+
+
+class ChangePassword(BaseModel):
+    email: str
+    current_password: str
+    new_password: str
+    confirm_new_password: str
 
 
 class UserCreateRequest(UserBase):
@@ -29,14 +61,14 @@ class UserCreateRequest(UserBase):
     password: str
     email: EmailStr
     is_active: bool = True
-    role: UserRole = UserRole.GUEST
+    role: UserRole
 
 
 class UserRegisterRequest(BaseModel):
     full_name: str
     email: EmailStr
     password: str
-    role: UserRole = UserRole.GUEST
+    role: UserRole
 
 
 class UserUpdateMeRequest(BaseModel):
