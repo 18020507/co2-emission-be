@@ -36,8 +36,6 @@ $ sudo -u postgres psql
 # GRANT ALL PRIVILEGES ON DATABASE fastapi_base TO db_user;
 
 // Clone project & run
-$ git clone https://github.com/Longdh57/fastapi-base
-$ cd fastapi-base
 $ virtualenv -p python3 .venv
 $ source .venv/bin/activate
 $ pip install -r requirements.txt
@@ -48,11 +46,15 @@ $ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 **Cách 2:** Dùng Docker & Docker Compose - đơn giản hơn nhưng cần có kiến thức Docker
 - Clone Project
 - Run docker-compose
-```
-$ git clone https://github.com/Longdh57/fastapi-base
-$ cd fastapi-base
-$ DOCKER_BUILDKIT=1 docker build -t fastapi-base:latest .
-$ docker-compose up -d
+```sh
+# copy config 
+cp env.docker.example .env
+
+# Build:
+## for arm arch
+DOCKER_BUILDKIT=1 docker-compose up -d
+## for amd arch
+docker-compose up -d
 ```
 
 ## Cấu trúc project
