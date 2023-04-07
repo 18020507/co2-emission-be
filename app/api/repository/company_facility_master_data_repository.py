@@ -23,12 +23,12 @@ async def get_company_facility_master_data(company_id: int):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e.response)
 
 
-async def create_company_facility_master_data(company_id: int, data: list[CreateCompanyFacilityMasterData]):
+async def create_company_facility_master_data(data: list[CreateCompanyFacilityMasterData]):
     try:
         logging.info("===> create create_company_facility_master_data repository <===")
         for item in data:
             new_company_information = CompanyFacilityMasterData(
-                company_id=company_id,
+                company_id=item.company_id,
                 facility_address=item.facility_address,
                 facility_type=item.facility_type,
                 employee_no=item.employee_no,

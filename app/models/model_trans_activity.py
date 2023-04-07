@@ -1,3 +1,4 @@
+from pydantic import BaseModel
 from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey, Integer, Float
 
 from app.models.model_base import BareBaseModel

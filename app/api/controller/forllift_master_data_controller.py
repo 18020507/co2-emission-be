@@ -30,11 +30,11 @@ async def get_forklift_master_data(facility_master_data_id: int):
 
 
 @router.post(Route.V1.CREATE_FORKLIFT_MASTER_DATA, dependencies=[Depends(login_required)])
-async def create_forklift_master_data(facility_master_data_id: int, data: list[CreateForkliftMasterData]):
+async def create_forklift_master_data(data: list[CreateForkliftMasterData]):
     logging.info("===>>> forklift_master_data_controller.py <<<===")
     logging.info("===>>> function create_forklift_master_data <<<===")
     try:
-        response = await forklift_master_data_service.create_forklift_master_data(facility_master_data_id, data)
+        response = await forklift_master_data_service.create_forklift_master_data(data)
         return response
     except ClientError or Exception as e:
         logging.error("===>>> Error forklift_master_data_controller.create_forklift_master_data <<<===")

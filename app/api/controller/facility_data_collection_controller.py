@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 
 from app.helpers.login_manager import login_required
 from botocore.exceptions import ClientError
@@ -13,23 +14,13 @@ router = APIRouter()
 
 
 @router.get(Route.V1.GET_FACILITY_DATA_COLLECTION, dependencies=[Depends(login_required)])
-async def get_facility_data_collection(facility_id: str):
+async def get_facility_data_collection(company_id: int, fuel_source_name: Optional[str] = None,
+                                       activity_type_name: Optional[str] = None):
     logging.info("===>>> facility_data_collection_controller.py <<<===")
     logging.info("===>>> function get_facility_data_collection <<<===")
     try:
-        response = await facility_data_collection_service.get_facility_data_collection(facility_id)
-        return response
-    except ClientError or Exception as e:
-        logging.error("===>>> Error company_facility_master_data_controller.get_company_facility_master_data <<<===")
-        logging.error(e)
-
-
-@router.get(Route.V1.GET_ALL_FACILITY_IN_COMPANY, dependencies=[Depends(login_required)])
-async def get_all_facility_id(company_id: int):
-    logging.info("===>>> facility_data_collection_controller.py <<<===")
-    logging.info("===>>> function get_all_facility_id <<<===")
-    try:
-        response = await facility_data_collection_service.get_all_facility_id(company_id)
+        response = await facility_data_collection_service.get_facility_data_collection(company_id, fuel_source_name,
+                                                                                       activity_type_name)
         return response
     except ClientError or Exception as e:
         logging.error("===>>> Error company_facility_master_data_controller.get_company_facility_master_data <<<===")

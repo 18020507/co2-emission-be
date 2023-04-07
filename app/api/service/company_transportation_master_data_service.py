@@ -16,8 +16,7 @@ async def get_company_transportation_master_data(company_id: int):
     return response
 
 
-async def create_company_transportation_master_data(company_id: int, data: list[CreateCompanyTransportationMasterData]):
+async def create_company_transportation_master_data(data: list[CreateCompanyTransportationMasterData]):
     logging.info("===>  create company_facility_master_data service <===")
-    response = await company_transportation_master_data_repository.create_company_transportation_master_data(company_id,
-                                                                                                             data)
+    response = await company_transportation_master_data_repository.create_company_transportation_master_data(data)
     return response

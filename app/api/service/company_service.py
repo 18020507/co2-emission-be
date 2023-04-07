@@ -5,13 +5,8 @@ from fastapi import Depends
 from fastapi.security import HTTPBearer
 
 from app.api.repository import role_repository, company_repository, auth_repository
-from app.core.config import settings
 from app.helpers.paging import PaginationParams
-from app.models import User
 from app.schemas.sche_company import CreateCompanyInformation
-from app.schemas.sche_role import CreateRole
-from app.schemas.sche_token import TokenPayload
-from app.schemas.sche_user import UserDTO
 
 reusable_oauth2 = HTTPBearer(
     scheme_name='Authorization'
@@ -21,6 +16,12 @@ reusable_oauth2 = HTTPBearer(
 async def get_company_information(params: PaginationParams = Depends()):
     logging.info("===> get company information service <===")
     response = await company_repository.get_company_information(params)
+    return response
+
+
+async def get_company_information_by_id(company_id: int):
+    logging.info("===> get company information service <===")
+    response = await company_repository.get_company_information_by_id(company_id)
     return response
 
 

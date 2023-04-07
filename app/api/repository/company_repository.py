@@ -25,6 +25,17 @@ async def get_company_information(params: PaginationParams = Depends()):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e.response)
 
 
+async def get_company_information_by_id(company_id: int):
+    try:
+        logging.info("===> get company information repository <===")
+        response = db.session.query(Company).filter(Company.id == company_id).all()
+        return DataResponse().success_response(response)
+    except ClientError as e:
+        logging.error("===> Error company_repository.get_company_information_by_id <===")
+        logging.error(e)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e.response)
+
+
 async def create_company_information(data: CreateCompanyInformation, user_id: int):
     try:
         logging.info("===> create role repository <===")
@@ -45,34 +56,6 @@ async def create_company_information(data: CreateCompanyInformation, user_id: in
         db.session.add(new_company_information)
         db.session.commit()
 
-        # new_company_facility_master_data = CompanyFacilityMasterData(
-        #     company_id=Company.id,
-        #     facility_address="",
-        #     facility_type="",
-        #     employee_no="",
-        #     forklift_no=0,
-        # )
-        # db.session.add(new_company_facility_master_data)
-        # db.session.commit()
-        #
-        # new_transport_master_data = TransportationMasterData(
-        #     company_id=Company.id,
-        #     vehicle_type="",
-        #     vehicle_name="",
-        #     vehicle_model="",
-        #     vehicle_year=0,
-        #     vehicle_mileage=0,
-        #     vehicle_fuel_source_id=0,
-        # )
-        #
-        # new_fuel_source = FuelSource(
-        #     company_id=Company.id,
-        #     fuel_source_name="",
-        #     unit_type=""
-        # )
-        #
-        # db.session.add(new_transport_master_data)
-        # db.session.commit()
         return DataResponse().success_response(data)
     except ClientError as e:
         logging.error("===> Error company_repository.create_company_information <===")

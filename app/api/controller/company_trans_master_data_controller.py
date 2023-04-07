@@ -26,12 +26,11 @@ async def get_company_transportation_master_data(company_id: int):
 
 
 @router.post(Route.V1.CREATE_TRANSPORTATION_MASTER_DATA, dependencies=[Depends(login_required)])
-async def create_company_transportation_master_data(company_id: int, data: list[CreateCompanyTransportationMasterData]):
+async def create_company_transportation_master_data(data: list[CreateCompanyTransportationMasterData]):
     logging.info("===>>> company_transportation_master_data_controller.py <<<===")
     logging.info("===>>> function create_company_transportation_master_data <<<===")
     try:
-        response = await company_transportation_master_data_service.create_company_transportation_master_data(
-            company_id, data)
+        response = await company_transportation_master_data_service.create_company_transportation_master_data(data)
         return response
     except ClientError or Exception as e:
         logging.error("===>>> Error company_facility_master_data_controller.get_company_facility_master_data <<<===")

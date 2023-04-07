@@ -4,38 +4,63 @@ from fastapi import HTTPException, Depends
 from fastapi_sqlalchemy import db
 from starlette import status
 
-from app.models import CompanyFacilityMasterData, FacilityActivity
+from app.models import CompanyFacilityMasterData, FacilityActivity, FuelSource, ActivityType
 from app.schemas.sche_base import DataResponse
-from app.schemas.sche_create_facility_data import CreateFacilityData
+from app.schemas.sche_create_facility_data import CreateFacilityData, FacilityActivityDTO
 
 
-async def get_facility_data_collection(facility_id: str):
+async def get_facility_data_collection(company_id: int, fuel_source_name: str, activity_type_name: str):
     try:
         logging.info("===> get_facility_data_collection repository <===")
-        list_facility_id = facility_id.split(',')
-        response = []
-        for item in list_facility_id:
-            response_company_facility_data = db.session.query(FacilityActivity).filter(
-                FacilityActivity.company_facility_master_data_id == int(item)).all()
-            response = response + response_company_facility_data
-        return DataResponse().success_response(response)
+        if fuel_source_name and activity_type_name:
+            response = db.session.query(FacilityActivity, CompanyFacilityMasterData, FuelSource, ActivityType).join(
+                CompanyFacilityMasterData,
+                FacilityActivity.company_facility_master_data_id == CompanyFacilityMasterData.id) \
+                .join(FuelSource, FacilityActivity.fuel_source_id == FuelSource.id) \
+                .join(ActivityType, FacilityActivity.activity_type_id == ActivityType.id).filter(
+                CompanyFacilityMasterData.company_id == company_id).filter(
+                FuelSource.fuel_source_name == fuel_source_name).filter(
+                ActivityType.activity_type_name == activity_type_name).all()
+        elif fuel_source_name and not activity_type_name:
+            response = db.session.query(FacilityActivity, CompanyFacilityMasterData, FuelSource, ActivityType).join(
+                CompanyFacilityMasterData,
+                FacilityActivity.company_facility_master_data_id == CompanyFacilityMasterData.id) \
+                .join(FuelSource, FacilityActivity.fuel_source_id == FuelSource.id) \
+                .join(ActivityType, FacilityActivity.activity_type_id == ActivityType.id).filter(
+                CompanyFacilityMasterData.company_id == company_id).filter(
+                FuelSource.fuel_source_name == fuel_source_name).all()
+        elif activity_type_name and not fuel_source_name:
+            response = db.session.query(FacilityActivity, CompanyFacilityMasterData, FuelSource, ActivityType).join(
+                CompanyFacilityMasterData,
+                FacilityActivity.company_facility_master_data_id == CompanyFacilityMasterData.id) \
+                .join(FuelSource, FacilityActivity.fuel_source_id == FuelSource.id) \
+                .join(ActivityType, FacilityActivity.activity_type_id == ActivityType.id).filter(
+                CompanyFacilityMasterData.company_id == company_id).filter(
+                ActivityType.activity_type_name == activity_type_name).all()
+        else:
+            response = db.session.query(FacilityActivity, CompanyFacilityMasterData, FuelSource, ActivityType).join(
+                CompanyFacilityMasterData,
+                FacilityActivity.company_facility_master_data_id == CompanyFacilityMasterData.id) \
+                .join(FuelSource, FacilityActivity.fuel_source_id == FuelSource.id) \
+                .join(ActivityType, FacilityActivity.activity_type_id == ActivityType.id).filter(
+                CompanyFacilityMasterData.company_id == company_id).all()
+        return_response = []
+        for item in response:
+            dto = FacilityActivityDTO(
+                company_facility_master_data_id=item[1].id,
+                facility_id=item[0].id,
+                company_id=item[1].company_id,
+                date=item[0].date,
+                fuel_source_name=item[2].fuel_source_name,
+                activity_type_name=item[3].activity_type_name,
+                fuel_amount=item[0].fuel_amount,
+                Units=item[0].Units
+            )
+            return_response.append(dto)
+
+        return DataResponse().success_response(return_response)
     except ClientError as e:
         logging.error("===> Error facility_data_collection_repository.get_facility_data_collection <===")
-        logging.error(e)
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e.response)
-
-
-async def get_all_facility_id(company_id: int):
-    try:
-        logging.info("===> get_all_facility_id repository <===")
-        response = db.session.query(CompanyFacilityMasterData).filter(
-            CompanyFacilityMasterData.company_id == company_id).all()
-        list_facility_id = []
-        for item in response:
-            list_facility_id.append({'facility_id': item.id})
-        return DataResponse().success_response(list_facility_id)
-    except ClientError as e:
-        logging.error("===> Error facility_data_collection_repository.get_all_facility_id <===")
         logging.error(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e.response)
 

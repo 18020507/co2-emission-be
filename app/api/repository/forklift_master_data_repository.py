@@ -24,12 +24,12 @@ async def get_forklift_master_data(facility_master_data_id: int):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e.response)
 
 
-async def create_forklift_master_data(facility_master_data_id: int, data: list[CreateForkliftMasterData]):
+async def create_forklift_master_data(data: list[CreateForkliftMasterData]):
     try:
         logging.info("===> create_forklift_master_data repository <===")
         for item in data:
             new_forklift_master = FolkliftMasterData(
-                facility_master_data_id=facility_master_data_id,
+                facility_master_data_id=item.facility_master_data_id,
                 forklift_model=item.forklift_model,
                 fuel_type=item.fuel_type,
                 fuel_efficiency=item.fuel_efficiency,

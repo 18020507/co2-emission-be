@@ -16,9 +16,9 @@ async def get_forklift_master_data(facility_master_data_id: int):
     return response
 
 
-async def create_forklift_master_data(facility_master_data_id: int, data: list[CreateForkliftMasterData]):
+async def create_forklift_master_data(data: list[CreateForkliftMasterData]):
     logging.info("===>  create_forklift_master_data service <===")
-    response = await forklift_master_data_repository.create_forklift_master_data(facility_master_data_id, data)
+    response = await forklift_master_data_repository.create_forklift_master_data(data)
     return response
 
 

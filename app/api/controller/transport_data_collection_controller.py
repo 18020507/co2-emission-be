@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 
 from app.helpers.login_manager import login_required
 from app.helpers.paging import PaginationParams
@@ -17,27 +18,15 @@ router = APIRouter()
 
 
 @router.get(Route.V1.GET_TRANSPORTATION_DATA_COLLECTION, dependencies=[Depends(login_required)])
-async def get_transport_data_collection(trans_id: str):
+async def get_transport_data_collection(company_id: int, client_name: Optional[str] = None,
+                                        fuel_source_name: Optional[str] = None):
     logging.info("===>>> transport_data_collection_controller.py <<<===")
     logging.info("===>>> function get_transport_data_collection <<<===")
     try:
-        response = await transport_data_collection_service.get_trans_data_collection(trans_id)
+        response = await transport_data_collection_service.get_trans_data_collection(company_id, client_name, fuel_source_name)
         return response
     except ClientError or Exception as e:
         logging.error("===>>> Error company_facility_master_data_controller.get_company_facility_master_data <<<===")
-        logging.error(e)
-
-
-@router.get(Route.V1.GET_ALL_TRANSPORTATION_IN_COMPANY, dependencies=[Depends(login_required)])
-async def get_all_transport(company_id: int):
-    logging.info("===>>> transport_data_collection_controller.py <<<===")
-    logging.info("===>>> function get_transport_data_collection <<<===")
-    try:
-        response = await transport_data_collection_service.get_all_trans(company_id)
-        return response
-    except ClientError or Exception as e:
-        logging.error(
-            "===>>> Error company_facility_master_data_controller.get_company_facility_master_data <<<===")
         logging.error(e)
 
 

@@ -6,15 +6,10 @@ from app.schemas.sche_create_company_facility_master_data import CreateCompanyFa
 from app.schemas.sche_create_facility_data import CreateFacilityData
 
 
-async def get_facility_data_collection(facility_id: str):
+async def get_facility_data_collection(company_id: int, fuel_source_name: str, activity_type_name: str):
     logging.info("===> get facility_data_collection service <===")
-    response = await facility_data_collection_repository.get_facility_data_collection(facility_id)
-    return response
-
-
-async def get_all_facility_id(company_id: int):
-    logging.info("===> get_all_facility_id service <===")
-    response = await facility_data_collection_repository.get_all_facility_id(company_id)
+    response = await facility_data_collection_repository.get_facility_data_collection(company_id, fuel_source_name,
+                                                                                      activity_type_name)
     return response
 
 

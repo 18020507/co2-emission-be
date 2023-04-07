@@ -14,12 +14,24 @@ from config.route import Route
 router = APIRouter()
 
 
-@router.get(Route.V1.GET_COMPANY_INFORMATION, dependencies=[Depends(login_required)])
+@router.get(Route.V1.GET_LIST_COMPANY_INFORMATION, dependencies=[Depends(login_required)])
 async def get_company_information(params: PaginationParams = Depends()):
     logging.info("===>>> company_controller.py <<<===")
     logging.info("===>>> function get_company_information <<<===")
     try:
         response = await company_service.get_company_information(params)
+        return response
+    except ClientError or Exception as e:
+        logging.error("===>>> Error company_controller.get_company_information <<<===")
+        logging.error(e)
+
+
+@router.get(Route.V1.GET_COMPANY_INFORMATION_BY_ID, dependencies=[Depends(login_required)])
+async def get_company_information_by_id(company_id: int):
+    logging.info("===>>> company_controller.py <<<===")
+    logging.info("===>>> function get_company_information_by_id <<<===")
+    try:
+        response = await company_service.get_company_information_by_id(company_id)
         return response
     except ClientError or Exception as e:
         logging.error("===>>> Error company_controller.get_company_information <<<===")

@@ -14,9 +14,9 @@ async def get_company_facility_master_data(company_id: int):
     return response
 
 
-async def create_company_facility_master_data(company_id: int, data: list[CreateCompanyFacilityMasterData]):
+async def create_company_facility_master_data(data: list[CreateCompanyFacilityMasterData]):
     logging.info("===>  create company_facility_master_data service <===")
-    response = await company_facility_master_data_repository.create_company_facility_master_data(company_id, data)
+    response = await company_facility_master_data_repository.create_company_facility_master_data(data)
     return response
 
 

@@ -18,29 +18,28 @@ class Route:
         CREATE_ROLE = '/role'
 
         #         Company
-        GET_COMPANY_INFORMATION = '/company'
+        GET_LIST_COMPANY_INFORMATION = '/company'
+        GET_COMPANY_INFORMATION_BY_ID = '/company/{company_id}'
         CREATE_COMPANY_INFORMATION = '/company'
 
         #         Facility Master Data
         GET_FACILITY_MASTER_DATA = '/facility-master-data/{company_id}'
-        CREATE_FACILITY_MASTER_DATA = '/facility-master-data/{company_id}'
+        CREATE_FACILITY_MASTER_DATA = '/facility-master-data'
 
         #         Forklift Master Data
         GET_FORKLIFT_MASTER_DATA = '/forklift-master-data/{facility_master_data_id}'
-        CREATE_FORKLIFT_MASTER_DATA = '/forklift-master-data/{facility_master_data_id}'
+        CREATE_FORKLIFT_MASTER_DATA = '/forklift-master-data'
 
         #         Transportation Master Data
         GET_TRANSPORTATION_MASTER_DATA = '/transportation-master-data/{company_id}'
-        CREATE_TRANSPORTATION_MASTER_DATA = '/transportation-master-data/{company_id}'
+        CREATE_TRANSPORTATION_MASTER_DATA = '/transportation-master-data'
 
         #         Facility Data Collection
-        GET_FACILITY_DATA_COLLECTION = '/facility-collection/{facility_id}'
-        GET_ALL_FACILITY_IN_COMPANY = '/facility/{company_id}'
+        GET_FACILITY_DATA_COLLECTION = '/facility-collection/{company_id}'
         CREATE_FACILITY_DATA_COLLECTION = '/facility-collection'
 
         #         Transportation Data Collection
-        GET_TRANSPORTATION_DATA_COLLECTION = '/transportation-collection/{trans_id}'
-        GET_ALL_TRANSPORTATION_IN_COMPANY = '/transportation/{company_id}'
+        GET_TRANSPORTATION_DATA_COLLECTION = '/transportation-collection/{company_id}'
         CREATE_TRANSPORTATION_DATA_COLLECTION = '/transportation-collection'
 
         #         Fuel Source
