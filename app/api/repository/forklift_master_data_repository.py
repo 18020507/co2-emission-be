@@ -28,14 +28,23 @@ async def create_forklift_master_data(data: list[CreateForkliftMasterData]):
     try:
         logging.info("===> create_forklift_master_data repository <===")
         for item in data:
-            new_forklift_master = FolkliftMasterData(
-                facility_master_data_id=item.facility_master_data_id,
-                forklift_model=item.forklift_model,
-                fuel_type=item.fuel_type,
-                fuel_efficiency=item.fuel_efficiency,
-                units=item.units,
-            )
-            db.session.add(new_forklift_master)
+            existing_record = db.session.query(FolkliftMasterData).filter(
+                FolkliftMasterData.facility_master_data_id == item.facility_master_data_id,
+                FolkliftMasterData.forklift_model == item.forklift_model,
+                FolkliftMasterData.fuel_type == item.fuel_type,
+                FolkliftMasterData.fuel_efficiency == item.fuel_efficiency,
+                FolkliftMasterData.units == item.units,
+            ).first()
+            # If the record doesn't exist, add it to the session
+            if not existing_record:
+                new_forklift_master = FolkliftMasterData(
+                    facility_master_data_id=item.facility_master_data_id,
+                    forklift_model=item.forklift_model,
+                    fuel_type=item.fuel_type,
+                    fuel_efficiency=item.fuel_efficiency,
+                    units=item.units,
+                )
+                db.session.add(new_forklift_master)
         db.session.commit()
         return DataResponse().success_response(data)
     except ClientError as e:

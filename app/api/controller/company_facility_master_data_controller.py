@@ -32,7 +32,6 @@ async def create_company_facility_master_data(data: list[CreateCompanyFacilityMa
     logging.info("===>>> company_facility_master_data_controller.py <<<===")
     logging.info("===>>> function create_company_facility_master_data <<<===")
     try:
-        print(data)
         response = await company_facility_master_data_service.create_company_facility_master_data(data)
         return response
     except ClientError or Exception as e:

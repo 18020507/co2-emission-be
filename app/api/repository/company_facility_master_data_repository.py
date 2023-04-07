@@ -27,14 +27,24 @@ async def create_company_facility_master_data(data: list[CreateCompanyFacilityMa
     try:
         logging.info("===> create create_company_facility_master_data repository <===")
         for item in data:
-            new_company_information = CompanyFacilityMasterData(
-                company_id=item.company_id,
-                facility_address=item.facility_address,
-                facility_type=item.facility_type,
-                employee_no=item.employee_no,
-                forklift_no=item.forklift_no,
-            )
-            db.session.add(new_company_information)
+            # Check if the record already exists
+            existing_record = db.session.query(CompanyFacilityMasterData).filter(
+                CompanyFacilityMasterData.company_id == item.company_id,
+                CompanyFacilityMasterData.facility_address == item.facility_address,
+                CompanyFacilityMasterData.facility_type == item.facility_type,
+                CompanyFacilityMasterData.employee_no == item.employee_no,
+                CompanyFacilityMasterData.forklift_no == item.forklift_no
+            ).first()
+            # If the record doesn't exist, add it to the session
+            if not existing_record:
+                new_company_information = CompanyFacilityMasterData(
+                    company_id=item.company_id,
+                    facility_address=item.facility_address,
+                    facility_type=item.facility_type,
+                    employee_no=item.employee_no,
+                    forklift_no=item.forklift_no,
+                )
+                db.session.add(new_company_information)
         db.session.commit()
         return DataResponse().success_response(data)
     except ClientError as e:
