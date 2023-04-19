@@ -55,4 +55,8 @@ class Route:
         GET_STATIONARY_COMBUSTION_REPORT = '/report-stationary/{company_id}'
         GET_MOBILE_COMBUSTION_REPORT = '/report-mobile-combustion/{company_id}'
 
+        #         Dashboard
+        GET_DASHBOARD_DATA = '/dashboard/{company_id}'
+        GET_DASHBOARD_CHART_DATA = '/dashboard_chart/{company_id}'
+
 

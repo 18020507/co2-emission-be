@@ -3,7 +3,7 @@ from fastapi import APIRouter
 from app.api.controller import auth_controller, api_healthcheck, role_controller, company_controller, \
     company_facility_master_data_controller, company_trans_master_data_controller, facility_data_collection_controller, \
     transport_data_collection_controller, forllift_master_data_controller, fuel_source_controller, activity_controller, \
-    report_controller
+    report_controller, dashboard_controller
 from config.route import Route
 
 router = APIRouter()
@@ -40,9 +40,12 @@ router.include_router(fuel_source_controller.router, prefix=Route.V1.prefix_api,
 router.include_router(activity_controller.router, prefix=Route.V1.prefix_api,
                       tags=["Activity Type"], responses={404: {"description": "Not found"}})
 
-
 router.include_router(report_controller.router, prefix=Route.V1.prefix_api,
                       tags=["Report"], responses={404: {"description": "Not found"}})
+
+router.include_router(dashboard_controller.router, prefix=Route.V1.prefix_api,
+                      tags=["Dashboard"], responses={404: {"description": "Not found"}})
+
 
 
 
