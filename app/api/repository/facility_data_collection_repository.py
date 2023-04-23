@@ -69,18 +69,39 @@ async def create_facility_data_collection(data: list[CreateFacilityData]):
     try:
         logging.info("===> create_facility_data_collection repository <===")
         for item in data:
-            new_facility_data = FacilityActivity(
-                company_facility_master_data_id=item.company_facility_master_data_id,
-                date=item.date,
-                fuel_source_id=item.fuel_source_id,
-                activity_type_id=item.activity_type_id,
-                fuel_amount=item.fuel_amount,
-                Units=item.Units,
-            )
-            db.session.add(new_facility_data)
+            # check if data is true
+            new_fuel_source_id_type = convert_to_int(item.fuel_source_id)
+            new_activity_type_id_type = convert_to_int(item.activity_type_id)
+            if new_fuel_source_id_type and new_activity_type_id_type is not None:
+                # check if the record already exists
+                existing_record = db.session.query(FacilityActivity).filter(
+                    FacilityActivity.company_facility_master_data_id == item.company_facility_master_data_id,
+                    FacilityActivity.date == item.date,
+                    FacilityActivity.fuel_source_id == item.fuel_source_id,
+                    FacilityActivity.activity_type_id == item.activity_type_id,
+                    FacilityActivity.fuel_amount == item.fuel_amount,
+                    FacilityActivity.Units == item.Units
+                ).first()
+                if not existing_record:
+                    new_facility_data = FacilityActivity(
+                        company_facility_master_data_id=item.company_facility_master_data_id,
+                        date=item.date,
+                        fuel_source_id=item.fuel_source_id,
+                        activity_type_id=item.activity_type_id,
+                        fuel_amount=item.fuel_amount,
+                        Units=item.Units,
+                    )
+                    db.session.add(new_facility_data)
         db.session.commit()
         return DataResponse().success_response(data)
     except ClientError as e:
         logging.error("===> Error facility_activity.create_facility_data_collection <===")
         logging.error(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e.response)
+
+
+def convert_to_int(data):
+    try:
+        return int(data)
+    except ValueError:
+        return None

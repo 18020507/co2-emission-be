@@ -70,15 +70,25 @@ async def create_trans_data_collection(data: list[CreateTransportData]):
     try:
         logging.info("===> create_trans_data_collection repository <===")
         for item in data:
-            new_trans_data = TransActivity(
-                transportation_master_data_id=item.transportation_master_data_id,
-                date=item.date,
-                client_id=item.client_id,
-                fuel_source_id=item.fuel_source_id,
-                fuel_amount=item.fuel_amount,
-                distance_travel=item.distance_travel,
-            )
-            db.session.add(new_trans_data)
+            # check if the record already exists
+            existing_record = db.session.query(TransActivity).filter(
+                TransActivity.transportation_master_data_id == item.transportation_master_data_id,
+                TransActivity.date == item.date,
+                TransActivity.client_id == item.client_id,
+                TransActivity.fuel_source_id == item.fuel_source_id,
+                TransActivity.fuel_amount == item.fuel_amount,
+                TransActivity.distance_travel == item.distance_travel
+            ).first()
+            if not existing_record:
+                new_trans_data = TransActivity(
+                    transportation_master_data_id=item.transportation_master_data_id,
+                    date=item.date,
+                    client_id=item.client_id,
+                    fuel_source_id=item.fuel_source_id,
+                    fuel_amount=item.fuel_amount,
+                    distance_travel=item.distance_travel,
+                )
+                db.session.add(new_trans_data)
         db.session.commit()
         return DataResponse().success_response(data)
     except ClientError as e:
