@@ -20,13 +20,13 @@ router = APIRouter()
 
 @router.get(Route.V1.GET_SUMMARY_REPORT, dependencies=[Depends(login_required)])
 async def get_summary_report(company_id: int):
-    logging.info("===>>> activity_controller.py <<<===")
-    logging.info("===>>> function get_activity <<<===")
+    logging.info("===>>> report_controller.py <<<===")
+    logging.info("===>>> function get_summary <<<===")
     try:
-        response = await activity_service.get_activity(company_id)
+        response = await report_service.get_summary_report(company_id)
         return response
     except ClientError or Exception as e:
-        logging.error("===>>> Error activity_controller.get_activity <<<===")
+        logging.error("===>>> Error report_controller.get_summary <<<===")
         logging.error(e)
 
 

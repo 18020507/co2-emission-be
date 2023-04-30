@@ -21,6 +21,7 @@ class Route:
         GET_LIST_COMPANY_INFORMATION = '/company'
         GET_COMPANY_INFORMATION_BY_ID = '/company/{company_id}'
         CREATE_COMPANY_INFORMATION = '/company'
+        UPDATE_COMPANY_INFORMATION = '/company'
 
         #         Facility Master Data
         GET_FACILITY_MASTER_DATA = '/facility-master-data/{company_id}'
@@ -51,12 +52,16 @@ class Route:
         CREATE_ACTIVITY = '/activity/{company_id}'
 
         #         Report
-        GET_SUMMARY_REPORT = '/report-summary'
+        GET_SUMMARY_REPORT = '/report-summary/{company_id}'
         GET_STATIONARY_COMBUSTION_REPORT = '/report-stationary/{company_id}'
         GET_MOBILE_COMBUSTION_REPORT = '/report-mobile-combustion/{company_id}'
 
         #         Dashboard
         GET_DASHBOARD_DATA = '/dashboard/{company_id}'
         GET_DASHBOARD_CHART_DATA = '/dashboard_chart/{company_id}'
+
+        #         Client
+        GET_CLIENT = '/client/{company_id}'
+        CREATE_CLIENT = '/client/{company_id}'
 
 

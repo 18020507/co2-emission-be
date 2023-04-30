@@ -8,7 +8,7 @@ from app.api.service import auth_service, role_service, company_service
 
 from fastapi import APIRouter, Depends
 
-from app.schemas.sche_company import CreateCompanyInformation
+from app.schemas.sche_company import CreateCompanyInformation, UpdateCompanyInformation
 from config.route import Route
 
 router = APIRouter()
@@ -44,6 +44,18 @@ async def create_company_information(data: CreateCompanyInformation):
     logging.info("===>>> function create_company_information <<<===")
     try:
         response = await company_service.create_company_information(data)
+        return response
+    except ClientError or Exception as e:
+        logging.error("===>>> Error role_controller.get_list_role <<<===")
+        logging.error(e)
+
+
+@router.put(Route.V1.UPDATE_COMPANY_INFORMATION, dependencies=[Depends(login_required)])
+async def update_company_information(data: UpdateCompanyInformation):
+    logging.info("===>>> company_controller.py <<<===")
+    logging.info("===>>> function update_company_information <<<===")
+    try:
+        response = await company_service.update_company_information(data)
         return response
     except ClientError or Exception as e:
         logging.error("===>>> Error role_controller.get_list_role <<<===")

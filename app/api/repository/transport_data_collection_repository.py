@@ -37,7 +37,7 @@ async def get_trans_data_collection(company_id: int, client_name: str, fuel_sour
                 .join(FuelSource, TransActivity.fuel_source_id == FuelSource.id) \
                 .join(ClientMasterData, TransActivity.client_id == ClientMasterData.id).filter(
                 TransportationMasterData.company_id == company_id).filter(
-                ClientMasterData.client_name == client_name).all()
+                FuelSource.fuel_source_name == fuel_source_name).all()
         else:
             response = db.session.query(TransActivity, TransportationMasterData, FuelSource, ClientMasterData).join(
                 TransportationMasterData,
@@ -48,7 +48,7 @@ async def get_trans_data_collection(company_id: int, client_name: str, fuel_sour
         return_response = []
         for item in response:
             dto = TransActivityDTO(
-                company_facility_master_data_id=item[1].id,
+                transportation_master_data_id=item[1].id,
                 trans_id=item[0].id,
                 company_id=item[1].company_id,
                 date=item[0].date,
@@ -70,28 +70,39 @@ async def create_trans_data_collection(data: list[CreateTransportData]):
     try:
         logging.info("===> create_trans_data_collection repository <===")
         for item in data:
-            # check if the record already exists
-            existing_record = db.session.query(TransActivity).filter(
-                TransActivity.transportation_master_data_id == item.transportation_master_data_id,
-                TransActivity.date == item.date,
-                TransActivity.client_id == item.client_id,
-                TransActivity.fuel_source_id == item.fuel_source_id,
-                TransActivity.fuel_amount == item.fuel_amount,
-                TransActivity.distance_travel == item.distance_travel
-            ).first()
-            if not existing_record:
-                new_trans_data = TransActivity(
-                    transportation_master_data_id=item.transportation_master_data_id,
-                    date=item.date,
-                    client_id=item.client_id,
-                    fuel_source_id=item.fuel_source_id,
-                    fuel_amount=item.fuel_amount,
-                    distance_travel=item.distance_travel,
-                )
-                db.session.add(new_trans_data)
+            # check if data is true
+            new_fuel_source_id_type = convert_to_int(item.fuel_source_id)
+            new_client = convert_to_int(item.client_id)
+            if new_fuel_source_id_type and new_client is not None:
+                # check if the record already exists
+                existing_record = db.session.query(TransActivity).filter(
+                    TransActivity.transportation_master_data_id == item.transportation_master_data_id,
+                    TransActivity.date == item.date,
+                    TransActivity.client_id == item.client_id,
+                    TransActivity.fuel_source_id == item.fuel_source_id,
+                    TransActivity.fuel_amount == item.fuel_amount,
+                    TransActivity.distance_travel == item.distance_travel
+                ).first()
+                if not existing_record:
+                    new_trans_data = TransActivity(
+                        transportation_master_data_id=item.transportation_master_data_id,
+                        date=item.date,
+                        client_id=item.client_id,
+                        fuel_source_id=item.fuel_source_id,
+                        fuel_amount=item.fuel_amount,
+                        distance_travel=item.distance_travel,
+                    )
+                    db.session.add(new_trans_data)
         db.session.commit()
         return DataResponse().success_response(data)
     except ClientError as e:
         logging.error("===> Error trans_activity.create_trans_data_collection <===")
         logging.error(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e.response)
+
+
+def convert_to_int(data):
+    try:
+        return int(data)
+    except ValueError:
+        return None

@@ -1,5 +1,5 @@
+from datetime import datetime
 import logging
-import uuid
 from botocore.exceptions import ClientError
 from fastapi import HTTPException, Depends
 from fastapi_sqlalchemy import db
@@ -9,7 +9,7 @@ from app.models import Company, CompanyFacilityMasterData, TransportationMasterD
 from app.models.model_role import Role
 from app.schemas.sche_base import DataResponse
 from app.helpers.paging import paginate, PaginationParams
-from app.schemas.sche_company import CreateCompanyInformation
+from app.schemas.sche_company import CreateCompanyInformation, UpdateCompanyInformation
 from app.schemas.sche_role import CreateRole
 
 
@@ -59,5 +59,31 @@ async def create_company_information(data: CreateCompanyInformation, user_id: in
         return DataResponse().success_response(data)
     except ClientError as e:
         logging.error("===> Error company_repository.create_company_information <===")
+        logging.error(e)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e.response)
+
+
+async def update_company_information(data: UpdateCompanyInformation):
+    try:
+        logging.info("===> update company repository <===")
+        current_time = datetime.now()
+        current_company = db.session.query(Company).get(data.company_id)
+        if current_company is None:
+            raise Exception('Company not exist')
+        current_company.legal_name = current_company.legal_name if data.legal_name is None else data.legal_name
+        current_company.contact_name = current_company.contact_name if data.contact_name is None else data.contact_name
+        current_company.legal_address = current_company.legal_address if data.legal_address is None else data.legal_address
+        current_company.contact_email = current_company.contact_email if data.contact_email is None else data.contact_email
+        current_company.employer_identification_number = current_company.employer_identification_number if data.employer_identification_number is None else data.employer_identification_number
+        current_company.contact_phone_number = current_company.contact_phone_number if data.contact_phone_number is None else data.contact_phone_number
+        current_company.company_number_of_facilities = current_company.company_number_of_facilities if data.company_number_of_facilities is None else data.company_number_of_facilities
+        current_company.company_sector = current_company.company_sector if data.company_sector is None else data.company_sector
+        current_company.company_service = current_company.company_service if data.company_service is None else data.company_service
+        current_company.updated_at = current_time
+        db.session.commit()
+
+        return DataResponse().success_response(data)
+    except ClientError as e:
+        logging.error("===> Error company_repository.update_company_information <===")
         logging.error(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e.response)
